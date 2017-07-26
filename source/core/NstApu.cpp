@@ -942,48 +942,6 @@ namespace Nes
 
 		NST_SINGLE_CALL dword Apu::Synchronizer::Clock(const dword output,const dword sampleRate,const Cpu& cpu)
 		{
-			if (sync)
-			{
-				if (duty >= 60*4)
-					streamed += output;
-
-				if (duty < 60*12)
-				{
-					duty++;
-				}
-				else
-				{
-					duty = 60*4;
-
-					dword actualRate = streamed / (60*8) * cpu.GetFps();
-					const dword limit = sampleRate / 21;
-
-					if (actualRate <= sampleRate-limit)
-					{
-						actualRate = sampleRate-limit;
-						sync--;
-					}
-					else if (actualRate >= sampleRate+limit)
-					{
-						actualRate = sampleRate+limit;
-						sync--;
-					}
-					else
-					{
-						sync = (sync > 2 ? sync - 2 : 0);
-					}
-
-					actualRate = actualRate * 9999 / 10000;
-					streamed = 0;
-
-					if (rate != actualRate)
-					{
-						rate = actualRate;
-						return actualRate;
-					}
-				}
-			}
-
 			return 0;
 		}
 
